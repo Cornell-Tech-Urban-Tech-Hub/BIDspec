@@ -5,6 +5,9 @@ export interface Props {
 
 const { backToTop = false } = Astro.props;
 const currentYear = new Date().getFullYear();
+
+const base = import.meta.env.BASE_URL || '/';
+const baseUrl = base.endsWith('/') ? base : `${base}/`;
 ---
 
 {
@@ -51,8 +54,8 @@ const currentYear = new Date().getFullYear();
       <div class="footer-section">
         <h3 class="footer-heading">Quick Links</h3>
         <ul class="footer-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/projects">Projects</a></li>
+          <li><a href={baseUrl}>Home</a></li>
+          <li><a href={`${baseUrl}projects`}>Projects</a></li>
         </ul>
       </div>
       

@@ -186,7 +186,7 @@ function DeckGLMap({
         if (!geojsonData && typeof window !== 'undefined') {
           console.log('GeoJSON data not loaded yet, attempting to load');
           
-          fetch(`/data/bids.geojson`)
+          fetch(`${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}data/bids.geojson`)
             .then(response => {
               if (!response.ok) throw new Error(`Failed to fetch: ${response.status}`);
               return response.json();
@@ -381,7 +381,7 @@ function DeckGLMap({
         
         let bidData = geojsonData;
         if (!bidData) {
-          const response = await fetch(`/data/bids.geojson`);
+          const response = await fetch(`${import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/'}data/bids.geojson`);
           if (!response.ok) {
             throw new Error(`Failed to fetch GeoJSON: ${response.status} ${response.statusText}`);
           }

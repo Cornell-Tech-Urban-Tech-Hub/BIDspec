@@ -28,6 +28,15 @@ const { Content, headings } = await entry.render();
 const base = import.meta.env.BASE_URL || '/';
 const baseUrl = base.endsWith('/') ? base : `${base}/`;
 
+// Rewrite absolute paths in markdown-rendered HTML so /public/ assets and
+// internal links resolve correctly when the site is hosted under a base path
+// (e.g. GitHub Pages at /BIDspec/).
+function applyBaseToHtml(html) {
+  if (!html || baseUrl === '/') return html;
+  return html
+    .replace(/(src|href)="\/(?!\/)/g, `$1="${baseUrl}`);
+}
+
 // Get BID names from all projects for the map
 const allProjects = await getCollection('projects');
 const projectBids = allProjects.map(project => project.data.bidName);
@@ -105,7 +114,7 @@ try {
           introContent = `## Project Overview\n\n${introContent}`;
         }
         
-        parsedSections.intro = marked.parse(introContent);
+        parsedSections.intro = applyBaseToHtml(marked.parse(introContent));
       }
     }
     
@@ -124,7 +133,7 @@ try {
         const sectionContent = sectionMatches[section][0].trim();
         // Only store if there's actual content beyond the heading
         if (sectionContent.length > (`# ${section} Analysis`).length) {
-          parsedSections[section] = marked.parse(sectionContent);
+          parsedSections[section] = applyBaseToHtml(marked.parse(sectionContent));
         } else {
           parsedSections[section] = '';
         }
@@ -139,7 +148,7 @@ try {
       // Only parse if there's content beyond the heading
       const additionalContent = additionalMatch[0].trim();
       if (additionalContent.length > "## Additional Resources".length) {
-        parsedSections.additional = marked.parse(additionalContent);
+        parsedSections.additional = applyBaseToHtml(marked.parse(additionalContent));
       } else {
         parsedSections.additional = '';
       }

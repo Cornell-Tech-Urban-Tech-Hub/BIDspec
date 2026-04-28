@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets';
 
-// Define the props interface
 interface Props {
   src: string;
   alt: string;
@@ -11,39 +10,48 @@ interface Props {
   inferSize?: boolean;
 }
 
-// Get the props with defaults
-const { 
-  src, 
-  alt, 
-  width = undefined, 
+const {
+  src,
+  alt,
+  width = undefined,
   height = undefined,
   class: className = "",
   inferSize = false
 } = Astro.props;
 
-// Process image path correctly for public directory
-// If the path doesn't start with a slash and doesn't include 'src/', 
-// we assume it's a path relative to public/
-let imageSrc = src;
+const base = import.meta.env.BASE_URL || '/';
+const baseUrl = base.endsWith('/') ? base : `${base}/`;
 
+const isExternal = typeof src === 'string' && /^https?:\/\//i.test(src);
+const isPublicPath = typeof src === 'string' && src.startsWith('/');
 
-// If both width and height are missing and inferSize is false, use default dimensions
-// to prevent the MissingImageDimension error
+let resolvedSrc: string = src;
+if (isPublicPath) {
+  // Prefix the configured base path to absolute paths pointing into /public/.
+  resolvedSrc = `${baseUrl}${src.replace(/^\/+/, '')}`;
+}
+
 const useWidth = width || 800;
 const useHeight = height || 600;
+
+// Plain <img> for /public/ assets and remote URLs (Astro's <Image> only
+// optimizes imported assets). This preserves base path on GitHub Pages.
+const usePlainImg = isExternal || isPublicPath;
 ---
 
 <div class={`astro-image-container ${className}`}>
-  {inferSize ? (
+  {usePlainImg ? (
+    <img src={resolvedSrc} alt={alt} class="astro-loaded-image" loading="lazy" />
+  ) : inferSize ? (
     <Image
-      src={imageSrc}
+      src={resolvedSrc}
       alt={alt}
       inferSize={true}
       class="astro-loaded-image"
     />
   ) : (
     <Image
-      src={imageSrc}
+      src={resolvedSrc}
       alt={alt}
       width={useWidth}
       height={useHeight}
@@ -61,7 +69,7 @@ const useHeight = height || 600;
     justify-content: center;
     overflow: hidden;
   }
-  
+
   .astro-loaded-image {
     max-width: 100%;
     height: auto;

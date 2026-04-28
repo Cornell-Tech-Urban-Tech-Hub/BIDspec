@@ -20,6 +20,9 @@ projectBids = projectBids.filter(bid => {
 const bidToSlugMap = Object.fromEntries(
   allProjects.map(project => [project.data.bidName, project.slug])
 );
+
+const base = import.meta.env.BASE_URL || '/';
+const baseUrl = base.endsWith('/') ? base : `${base}/`;
 ---
 
 <MainLayout title="BIDSpec - Business Improvement District Analysis" 
@@ -68,7 +71,7 @@ const bidToSlugMap = Object.fromEntries(
       
       <!-- Button placed back in first container but as standalone element -->
       <div class="relative mt-4 mb-8 flex justify-center">
-        <a href="/projects" class="button hero-button">View Projects</a>
+        <a href={`${baseUrl}projects`} class="button hero-button">View Projects</a>
       </div>
     </div>
     
@@ -113,7 +116,7 @@ const bidToSlugMap = Object.fromEntries(
       
       <div class="md:col-span-2 fade-in">
         <div class="relative rounded-xl overflow-hidden border border-muted/30 shadow-lg image-frame">
-          <img src="/images/cornell-tech.jpg" alt="Cornell Tech campus" class="w-full h-auto object-cover aspect-[4/3]" />
+          <img src={`${baseUrl}images/cornell-tech.jpg`} alt="Cornell Tech campus" class="w-full h-auto object-cover aspect-[4/3]" />
         </div>
         <p class="text-sm text-muted-foreground mt-3 text-center">Cornell Tech campus on Roosevelt Island, NYC</p>
       </div>
@@ -176,7 +179,7 @@ const bidToSlugMap = Object.fromEntries(
     </div>
     
     <div class="mt-14 text-center fade-in">
-      <a href="/projects" class="button">View all projects</a>
+      <a href={`${baseUrl}projects`} class="button">View all projects</a>
     </div>
   </section>
   
@@ -205,7 +208,7 @@ const bidToSlugMap = Object.fromEntries(
         Dive into our comprehensive analyses of Business Improvement Districts across New York City.
       </p>
       <div class="flex flex-wrap justify-center gap-4">
-        <a href="/projects" class="mt-14 text-center fade-in button">
+        <a href={`${baseUrl}projects`} class="mt-14 text-center fade-in button">
           View All Projects
         </a>
       </div>
@@ -229,8 +232,9 @@ function initializePage() {
   const imgElements = document.querySelectorAll('img');
   imgElements.forEach(img => {
     img.onerror = () => {
-      // Use absolute path for placeholder without base variable
-      img.src = "/images/placeholder.jpg";
+      const base = import.meta.env.BASE_URL || '/';
+      const baseUrl = base.endsWith('/') ? base : `${base}/`;
+      img.src = `${baseUrl}images/placeholder.jpg`;
     };
   });
 

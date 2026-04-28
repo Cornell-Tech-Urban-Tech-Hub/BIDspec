@@ -11,8 +11,11 @@ interface Props {
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
+const base = import.meta.env.BASE_URL || '/';
+const baseUrl = base.endsWith('/') ? base : `${base}/`;
+
 if (Astro.props.ogImage === undefined) {
-  Astro.props.ogImage = new URL(`/v1/generate/og/default.png`, Astro.url);
+  Astro.props.ogImage = new URL(`${baseUrl}v1/generate/og/default.png`, Astro.site ?? Astro.url);
 }
 
 const { title, description, ogImage } = Astro.props;
@@ -41,7 +44,7 @@ const { title, description, ogImage } = Astro.props;
   <meta property='twitter:image' content={ogImage} />
 
   <link rel='canonical' href={canonicalURL} />
-  <link rel='icon' type='image/svg' href='/favicon.png' />
+  <link rel='icon' type='image/svg' href={`${baseUrl}favicon.png`} />
 
   <title>{title}</title>
 

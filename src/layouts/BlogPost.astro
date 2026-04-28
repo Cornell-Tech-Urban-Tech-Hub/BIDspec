@@ -4,7 +4,9 @@ import BlogSideBar from '@components/blog/BlogSideBar.astro';
 import BlogContent from '@components/blog/BlogContent.astro';
 import RecentBlogPosts from '@components/generic/RecentBlogPosts.astro';
 
-const ogImage = new URL(`/v1/generate/og/${Astro.params.slug}.png`, Astro.url);
+const base = import.meta.env.BASE_URL || '/';
+const baseUrl = base.endsWith('/') ? base : `${base}/`;
+const ogImage = new URL(`${baseUrl}v1/generate/og/${Astro.params.slug}.png`, Astro.site ?? Astro.url);
 
 interface Props {
   author: string;

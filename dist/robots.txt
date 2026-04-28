@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+Host: https://cornell-tech-urban-tech-hub.github.io/BIDspec/
+Sitemap: https://cornell-tech-urban-tech-hub.github.io/BIDspec/sitemap-index.xml
